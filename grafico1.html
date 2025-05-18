@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico Suave e Completo</title>
+  <script src="https://unpkg.com/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0d1117;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    #chart {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+
+  <script>
+    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      layout: {
+        background: { color: '#0d1117' },
+        textColor: '#d1d4dc',
+      },
+      grid: {
+        vertLines: { color: '#222' },
+        horzLines: { color: '#222' },
+      },
+      timeScale: {
+        timeVisible: false,
+        secondsVisible: false,
+        rightOffset: 0,
+        fixLeftEdge: true, // cola na esquerda
+        borderVisible: false,
+      },
+      rightPriceScale: {
+        visible: true,
+        borderColor: '#555',
+      },
+      handleScroll: {
+        mouseWheel: false,
+        pressedMouseMove: false,
+      },
+    });
+
+    const candlestickSeries = chart.addCandlestickSeries({
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    const redLine = chart.addLineSeries({
+      color: '#ff4d4f',
+      lineWidth: 2,
+      priceLineVisible: false,
+    });
+
+    const blueLine = chart.addLineSeries({
+      color: '#1e90ff',
+      lineWidth: 2,
+      priceLineVisible: false,
+    });
+
+    let logicalTime = 0;
+    let price = 100;
+    let red = price + 2;
+    let blue = price - 2;
+
+    const candleData = [];
+    const redData = [];
+    const blueData = [];
+
+    function generateBar(time) {
+      const open = price;
+      const delta = (Math.random() - 0.5) * 0.5; // 🔧 VARIAÇÃO REDUZIDA (0.5 máx)
+      const close = open + delta;
+      const high = Math.max(open, close) + Math.random() * 0.3;
+      const low = Math.min(open, close) - Math.random() * 0.3;
+      price = close;
+      return { time, open, high, low, close };
+    }
+
+    function updateChart() {
+      logicalTime += 1;
+
+      const bar = generateBar(logicalTime);
+      candleData.push(bar);
+
+      red += (Math.random() - 0.5) * 0.1; // suave
+      blue += (Math.random() - 0.5) * 0.1;
+
+      redData.push({ time: logicalTime, value: red });
+      blueData.push({ time: logicalTime, value: blue });
+
+      if (candleData.length > 500) {
+        candleData.shift();
+        redData.shift();
+        blueData.shift();
+      }
+
+      candlestickSeries.setData(candleData);
+      redLine.setData(redData);
+      blueLine.setData(blueData);
+    }
+
+    // Atualização rápida com suavidade
+    setInterval(updateChart, 33); // 33ms = 30 FPS
+  </script>
+</body>
+</html>
