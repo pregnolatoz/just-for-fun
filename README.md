@@ -10,7 +10,7 @@
 
 ------------------
 ### Place your mouse at the bottom part until the icon that lets you drag appears.
-### Then, **drag the mouse to the right** as if you're pulling it.
+### Then, ***drag the mouse to the right*** as if you're pulling it.
 ![image](https://github.com/user-attachments/assets/d53dba04-a918-4063-9e01-32048bf23aee)
 
 --------------------------------------------
